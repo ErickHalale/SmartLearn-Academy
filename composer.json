@@ -1,0 +1,21 @@
+{
+    "name": "smartlearn/smartlearn",
+    "description": "SmartLearn Educational Platform",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "dompdf/dompdf": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SmartLearn\\": "includes/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "prefer-stable": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
