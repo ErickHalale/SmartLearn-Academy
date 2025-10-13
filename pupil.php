@@ -618,23 +618,129 @@ try {
             .main-container {
                 flex-direction: column;
             }
-            
+
             .sidebar-menu {
                 width: 100%;
                 height: auto;
                 position: relative;
                 top: 0;
             }
-            
+
             .sidebar-nav {
                 flex-direction: row;
                 overflow-x: auto;
                 padding: 10px 15px;
             }
-            
+
             .side-link {
                 white-space: nowrap;
             }
+        }
+        #theme-toggle {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #theme-toggle:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .dark-mode {
+            --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --header-bg: rgba(30, 30, 30, 0.98);
+            --sidebar-bg: rgba(30, 30, 30, 0.98);
+            --center-bg: rgba(30, 30, 30, 0.95);
+            --footer-bg: rgba(20, 20, 20, 0.98);
+            --text-color: #e0e0e0;
+            --accent: #667eea;
+        }
+        .dark-mode body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+        }
+        .dark-mode .header {
+            background: var(--header-bg);
+            color: var(--text-color);
+        }
+        .dark-mode .sidebar-menu {
+            background: var(--sidebar-bg);
+            color: var(--text-color);
+        }
+        .dark-mode .main-content {
+            background: var(--bg-gradient);
+        }
+        .dark-mode .dashboard-card {
+            background: var(--center-bg);
+            color: var(--text-color);
+        }
+        .dark-mode .hero-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+        .dark-mode .profile-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        }
+        .dark-mode .action-card {
+            background: var(--center-bg);
+            color: var(--text-color);
+        }
+        .dark-mode .action-card:hover {
+            background: rgba(50, 50, 50, 0.95);
+        }
+        .dark-mode .quote-card {
+            background: linear-gradient(135deg, rgba(52, 73, 94, 0.8) 0%, rgba(44, 62, 80, 0.8) 100%), url('../img/absolutvision-82TpEld0_e4-unsplash.jpg');
+        }
+        .dark-mode .subject-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        }
+        .dark-mode .side-link {
+            color: var(--text-color);
+        }
+        .dark-mode .side-link:hover {
+            background-color: rgba(236, 240, 241, 0.1);
+        }
+        .dark-mode .side-link.active {
+            background-color: var(--accent);
+        }
+        .dark-mode .header-link {
+            color: var(--text-color);
+        }
+        .dark-mode .header-link:hover {
+            background-color: rgba(236, 240, 241, 0.1);
+        }
+        .dark-mode h1, .dark-mode h2, .dark-mode h3 {
+            color: var(--text-color);
+        }
+        .dark-mode .action-content h3 {
+            color: var(--text-color);
+        }
+        .dark-mode .action-content p {
+            color: var(--text-color);
+        }
+        .dark-mode .stat-label {
+            color: var(--text-color);
+        }
+        .dark-mode .profile-info h3 {
+            color: var(--text-color);
+        }
+        .dark-mode .profile-info p {
+            color: var(--text-color);
+        }
+        .dark-mode .detail-row {
+            color: var(--text-color);
+        }
+        .dark-mode .sidebar-title {
+            color: var(--text-color);
+        }
+        .dark-mode .sidebar-subtitle {
+            color: var(--text-color);
         }
     </style>
     <!-- Font Awesome for icons -->
@@ -658,6 +764,7 @@ try {
             <a class="header-link" href="profile.php">
                 <i class="fas fa-user"></i> Profile
             </a>
+            <button id="theme-toggle" class="btn">🌙</button>
             <a class="header-link" href="logout.php">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
@@ -966,6 +1073,11 @@ try {
     </div>
 
     <script>
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            this.textContent = isDark ? '☀️' : '🌙';
+        });
         let currentFactIndex = 0;
         const factsContainer = document.getElementById('facts-container');
         const factItems = document.querySelectorAll('.fact-item');

@@ -308,29 +308,104 @@ try {
                 margin: 20px auto;
                 padding: 0 15px;
             }
-            
+
             .progress-card {
                 padding: 20px;
             }
-            
+
             .session-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
-            
+
             .session-score {
                 text-align: left;
             }
-            
+
             .session-details {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .header-nav {
                 flex-direction: column;
                 gap: 10px;
             }
+        }
+        #theme-toggle {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #theme-toggle:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .dark-mode {
+            --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --header-bg: rgba(30, 30, 30, 0.98);
+            --sidebar-bg: rgba(30, 30, 30, 0.98);
+            --center-bg: rgba(30, 30, 30, 0.95);
+            --footer-bg: rgba(20, 20, 20, 0.98);
+            --text-color: #e0e0e0;
+            --accent: #667eea;
+        }
+        .dark-mode body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+        }
+        .dark-mode .header {
+            background: var(--header-bg);
+            color: var(--text-color);
+        }
+        .dark-mode .progress-card {
+            background: var(--center-bg);
+            color: var(--text-color);
+        }
+        .dark-mode .quiz-session {
+            background: rgba(40, 40, 40, 0.95);
+            color: var(--text-color);
+        }
+        .dark-mode .detail-item {
+            background: rgba(50, 50, 50, 0.95);
+            color: var(--text-color);
+        }
+        .dark-mode .progress-title {
+            color: var(--text-color);
+        }
+        .dark-mode .progress-subtitle {
+            color: var(--text-color);
+        }
+        .dark-mode .session-info h3 {
+            color: var(--text-color);
+        }
+        .dark-mode .session-meta {
+            color: var(--text-color);
+        }
+        .dark-mode .score-value {
+            color: var(--accent);
+        }
+        .dark-mode .detail-value {
+            color: var(--text-color);
+        }
+        .dark-mode .detail-label {
+            color: var(--text-color);
+        }
+        .dark-mode .no-data {
+            color: var(--text-color);
+        }
+        .dark-mode .error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #f8d7da;
+            border-color: rgba(220, 53, 69, 0.3);
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -353,6 +428,7 @@ try {
             <a class="header-link" href="achievement.php">
                 <i class="fas fa-trophy"></i> Achievement
             </a>
+            <button id="theme-toggle" class="btn">🌙</button>
             <a class="header-link" href="logout.php">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
@@ -415,6 +491,13 @@ try {
             </a>
         </div>
     </div>
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            this.textContent = isDark ? '☀️' : '🌙';
+        });
+    </script>
 </body>
 </html>
 
