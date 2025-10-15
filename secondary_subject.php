@@ -473,6 +473,85 @@ if (isset($_GET['show_results']) && isset($_SESSION['secondary_quiz_results']) &
         $error = 'Database error: ' . $e->getMessage();
     }
 }
+
+// Handle PDF download request
+if (isset($_GET['download_pdf']) && $selected_topic_id && !empty($questions)) {
+    // Generate simple HTML content for download
+    $html_content = generateQuizHTML($questions, $current_topic, $current_subject, $form_level);
+
+    // Set headers for HTML download (fallback)
+    header('Content-Type: text/html');
+    header('Content-Disposition: attachment; filename="' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $current_topic['topic_name']) . '_questions.html"');
+    header('Cache-Control: private, max-age=0, must-revalidate');
+    header('Pragma: public');
+
+    // Output HTML content
+    echo $html_content;
+    exit;
+}
+
+// Function to generate HTML content for download
+function generateQuizHTML($questions, $topic, $subject, $form_level) {
+    $html = '
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Quiz Questions - ' . htmlspecialchars($topic['topic_name']) . '</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+            .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+            .question { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+            .question-number { font-weight: bold; color: #333; font-size: 16px; }
+            .question-text { margin: 10px 0; font-size: 14px; }
+            .question-meta { font-style: italic; color: #666; font-size: 12px; }
+            .options { margin-left: 20px; margin-top: 10px; }
+            .option { margin: 5px 0; padding: 5px; background: #f9f9f9; border-radius: 3px; }
+            .option-letter { font-weight: bold; color: #007bff; }
+            @media print {
+                body { margin: 0; }
+                .question { page-break-inside: avoid; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Quiz Questions</h1>
+            <h2>' . htmlspecialchars($topic['topic_name']) . '</h2>
+            <p><strong>Subject:</strong> ' . htmlspecialchars($subject['subject_name']) . '</p>
+            <p><strong>Form Level:</strong> ' . $form_level . '</p>
+            <p><strong>Total Questions:</strong> ' . count($questions) . '</p>
+        </div>';
+
+    foreach ($questions as $index => $question) {
+        $html .= '
+        <div class="question">
+            <div class="question-number">Question ' . ($index + 1) . ':</div>
+            <div class="question-text">' . htmlspecialchars($question['question_text']) . '</div>
+            <div class="question-meta">Points: ' . $question['points'] . ' | Type: ' . ucfirst(str_replace('_', ' ', $question['question_type'])) . '</div>';
+
+        if ($question['question_type'] === 'multiple_choice' && !empty($question['options'])) {
+            $html .= '<div class="options">';
+            foreach ($question['options'] as $optIndex => $option) {
+                $html .= '<div class="option"><span class="option-letter">' . chr(65 + $optIndex) . ')</span> ' . htmlspecialchars($option['option_text']) . '</div>';
+            }
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
+    }
+
+    $html .= '
+        <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
+            Generated from SmartLearn Educational Platform
+        </div>
+    </body>
+    </html>';
+
+    return $html;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -1091,11 +1170,6 @@ if (isset($_GET['show_results']) && isset($_SESSION['secondary_quiz_results']) &
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .result-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
         .result-item.incorrect {
             border-inline-start-color: #e74c3c;
         }
@@ -1208,6 +1282,16 @@ if (isset($_GET['show_results']) && isset($_SESSION['secondary_quiz_results']) &
 
         .btn-success:hover {
             background: #219653;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
             transform: translateY(-2px);
         }
 
@@ -1524,6 +1608,11 @@ if (isset($_GET['show_results']) && isset($_SESSION['secondary_quiz_results']) &
                             <a href="progress.php" class="btn btn-success">
                                 <i class="fas fa-chart-line"></i> View Progress
                             </a>
+                            <?php if ($selected_topic_id && !empty($questions)): ?>
+                                <a href="secondary_subject.php?form_level=<?php echo $form_level; ?>&subject_id=<?php echo $selected_subject_id; ?>&topic_id=<?php echo $selected_topic_id; ?>&download_pdf=1" class="btn btn-info">
+                                    <i class="fas fa-file-pdf"></i> Download PDF
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php elseif ($selected_topic_id && !empty($questions)): ?>
@@ -1609,6 +1698,11 @@ if (isset($_GET['show_results']) && isset($_SESSION['secondary_quiz_results']) &
                                 <a href="secondary_subject.php?form_level=<?php echo $form_level; ?>&subject_id=<?php echo $selected_subject_id; ?>&topic_id=<?php echo $selected_topic_id; ?>&show_results=1#results" class="btn btn-secondary" style="margin-inline-start: 10px;">
                                     <i class="fas fa-list-check"></i> View Scores
                                 </a>
+                                <?php if ($selected_topic_id && !empty($questions)): ?>
+                                    <a href="secondary_subject.php?form_level=<?php echo $form_level; ?>&subject_id=<?php echo $selected_subject_id; ?>&topic_id=<?php echo $selected_topic_id; ?>&download_pdf=1" class="btn btn-info" style="margin-inline-start: 10px;">
+                                        <i class="fas fa-file-pdf"></i> Download PDF
+                                    </a>
+                                <?php endif; ?>
                                 <p style="margin-block-start: 10px; color: #7f8c8d; font-size: 14px;">
                                     <i class="fas fa-info-circle"></i> You cannot change your answers after submission
                                 </p>
